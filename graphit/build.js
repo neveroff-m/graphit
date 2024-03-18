@@ -2,7 +2,7 @@ class button {
     constructor(Graph) {
         if(Graph.Text == null) Graph.Text = "???";
         Graph.Element.innerHTML =
-        `<div><button>${Graph.Text}</button></div>`;
+        `<div style='left:${Graph.X}vw; top:${Graph.Y}vw;'><input type='button' value='${Graph.Text}'/></div>`;
     }
 }
 

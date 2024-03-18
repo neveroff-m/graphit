@@ -4,3 +4,7 @@ body {
 
     font: normal 14px "Segoe UI";
 }
+
+div {
+    position: absolute;
+}
