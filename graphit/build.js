@@ -1,8 +1,69 @@
-class button {
+class group {
     constructor(Graph) {
+        Graph.Element.innerHTML =
+        `<div id='${Graph.ID}' style='left:${Graph.X}px; top:${Graph.Y}px;'>${Graph.Child}</div>`;
+    }
+}
+
+class label {
+    constructor(Graph) {
+        if(Graph.W == null) Graph.W = "115"; else Graph.W =Graph.W * 30 - 5;
+        if(Graph.H == null) Graph.H = "25"; else Graph.H = Graph.H * 30 - 5;
         if(Graph.Text == null) Graph.Text = "???";
         Graph.Element.innerHTML =
-        `<div style='left:${Graph.X}vw; top:${Graph.Y}vw;'><input type='button' value='${Graph.Text}'/></div>`;
+        `<div style='left:${Graph.X}px; top:${Graph.Y}px;'><input type='button' class='default' id='${Graph.ID}' value='${Graph.Text}' style='width:${Graph.W}px; height:${Graph.H}px;'/></div>`;
+    }
+}
+
+class label_title {
+    constructor(Graph) {
+        if(Graph.W == null) Graph.W = "115"; else Graph.W =Graph.W * 30 - 5;
+        if(Graph.H == null) Graph.H = "25"; else Graph.H = Graph.H * 30 - 5;
+        if(Graph.Text == null) Graph.Text = "???";
+        Graph.Element.innerHTML =
+        `<div style='left:${Graph.X}px; top:${Graph.Y}px;'><input type='button' class='default title' id='${Graph.ID}' value='${Graph.Text}' style='width:${Graph.W}px; height:${Graph.H}px;'/></div>`;
+    }
+}
+
+class button {
+    constructor(Graph) {
+        if(Graph.W == null) Graph.W = "115"; else Graph.W = Graph.W * 30 - 5;
+        if(Graph.H == null) Graph.H = "25"; else Graph.H = Graph.H * 30 - 5;
+        if(Graph.Text == null) Graph.Text = "???";
+        Graph.Element.innerHTML =
+        `<div style='left:${Graph.X}px; top:${Graph.Y}px;'><input type='button' class='hover' id='${Graph.ID}' value='${Graph.Text}' style='width:${Graph.W}px; height:${Graph.H}px;'/></div>`;
+    }
+}
+
+class icon {
+    constructor(Graph) {
+        Graph.W = 25;    
+        Graph.H = 25;
+        if(Graph.Text == null) Graph.Text = "???"; else Graph.Text = `&#x${Graph.Text};`;
+        Graph.Element.innerHTML =
+        `<div style='left:${Graph.X}px; top:${Graph.Y}px;'><input type='button' class='hover icon' id='${Graph.ID}' value='${Graph.Text}' style='width:${Graph.W}px; height:${Graph.H}px;'/></div>`;
+    }
+}
+
+class input {
+    constructor(Graph) {
+        if(Graph.W == null) Graph.W = "145"; else Graph.W = Graph.W * 30 - 5;
+        if(Graph.H == null) Graph.H = "25"; else Graph.H = Graph.H * 30 - 5;
+        if(Graph.Text == null) Graph.Text = "???";
+        if(Graph.Reference == null) Graph.Text = "";
+        Graph.Element.innerHTML =
+        `<div style='left:${Graph.X}px; top:${Graph.Y}px;'><input type='input' class='hover focus' id='${Graph.ID}' value='${Graph.Text}' placeholder='${Graph.Reference}' style='width:${Graph.W}px; height:${Graph.H}px;'/></div>`;
+    }
+}
+
+class input_password {
+    constructor(Graph) {
+        if(Graph.W == null) Graph.W = "115"; else Graph.W = Graph.W * 30 - 5;
+        if(Graph.H == null) Graph.H = "25"; else Graph.H = Graph.H * 30 - 5;
+        if(Graph.Text == null) Graph.Text = "???";
+        if(Graph.Reference == null) Graph.Text = "";
+        Graph.Element.innerHTML =
+        `<div style='left:${Graph.X}px; top:${Graph.Y}px;'><input type='password' class='hover focus' id='${Graph.ID}' value='${Graph.Text}' placeholder='${Graph.Reference}' style='width:${Graph.W}px; height:${Graph.H}px;'/></div>`;
     }
 }
 
@@ -12,100 +73,42 @@ class graph {
     }
     
     get(Attribute) {
-        return this.Element.getAttribute(Attribute);
+        let Value = this.Element.getAttribute(Attribute);
+        this.Element.removeAttribute(Attribute);
+        return Value;
     }
 
-    constructor(Element) {
+    constructor(Element, Index) {
         this.Element = Element;
         this.Child = this.Element.innerHTML;
+        this.ID = this.get("id");
         this.X = this.get("x");
         this.Y = this.get("y");
         this.W = this.get("w");
         this.H = this.get("h");
         this.Text = this.get("txt");
+        this.Reference = this.get("ref");
 
-        if(this.X == null) this.X = "0";
-        if(this.Y == null) this.Y = "0";
+        if(this.ID == null) this.ID = `OBJECT${Index}`;
+        if(this.X == null) this.X = "0"; else this.X = this.X * 30;
+        if(this.Y == null) this.Y = "0"; else this.Y = this.Y * 30;
 
+        if (this.has("group")) new group(this);
+        if (this.has("label")) new label(this);
+        if (this.has("label_title")) new label_title(this);
         if (this.has("button")) new button(this);
+        if (this.has("icon")) new icon(this);
+        if (this.has("input")) new input(this);
+        if (this.has("input_password")) new input_password(this);
     }
 }
 
 build();
-
 function build() {
     let List = document.getElementsByTagName("graph");
     let Length = List.length;
-    let i = 0;
 
-    for (; i < Length; i++) {
-        new graph(List[i]);
+    for (let i = 0; i < Length; i++) {
+        new graph(List[i], i);
     }
 }
-
-    /*
-    {
-        let child = elem.innerHTML;
-
-        let name = get("name", `object_${i}`);
-        let x = get("x");
-        let y = get("y");
-        let w = get("w");
-        let h = get("h");
-        let txt = get("txt");
-        let ref = get("ref", " ");
-        let click = get("click");
-
-        let tag = "";
-        tag += `<div style='left:${x}px; top:${y}px;' >`
-
-        if (has("group")) {
-            tag += child;
-        }
-
-        if (has("textblock")) {
-            tag += `<div id='${name}' class='default' style='width:${w}px; height:${h}px; text-align:left;'/>${child}</div>`
-        }
-
-        if (has("label")) {
-            tag += `<input id='${name}' type='button' class='default' value='${txt}' style='width:${w}px; height:${h}px;'/>`
-        }
-
-        if (has("title")) {
-            tag += `<input id='${name}' type='button' class='title' value='${txt}' style='width:${w}px; height:${h}px;'/>`
-        }
-
-        if (has("block")) {
-            tag += `<input id='${name}' type='button' class='block' value='${txt}' style='width:${h}px; height:${w}px; transform: rotate(-90deg);'/>`
-        }
-
-        if (has("button")) {
-            tag += `<input id='${name}' type='button' class='hover' value='${txt}' onclick='${click}' style='width:${w}px;'/>`
-        }
-
-        if (has("toggle")) {
-            tag += `<input id='${name}' type='button' class='passive' onclick='toggle(${name})' value='OFF' style='width:40px;'/>`
-        }
-
-        if (has("input")) {
-            tag += `<input id='${name}' type='text' class='focus' value='${txt}' placeholder='${ref}' style='width:${w}px;'/>`
-        }
-
-        if (has("password")) {
-            tag += `<div style='width:165px;'><input id='${name}' type='password' class='focus' value='${txt}' placeholder='${ref}' style='width:135px;'/><input type='button' class='hover' onclick='password(${name})' value='?' style='width:25px; margin-left:5px;'/></div>`
-        }
-
-        if (has("value")) {
-            tag += `<div style='width:165px;'><input id='${name}' type='button' class='value' value='${txt}' style='width:135px;'/><input type='button' class='reference' value='${ref}' style='width:25px; margin-left:5px;'/></div>`
-        }
-
-        if (has("svg"))
-        {
-            tag += `<svg id='${name}' width="${w}" height="${h}">${child}</svg>`
-        }
-
-        tag += "</div>";
-
-        elem.innerHTML = tag;
-    }
-    */
